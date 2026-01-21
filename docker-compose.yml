@@ -49,7 +49,7 @@ services:
       - KEYCLOAK_INTERNAL_URL=http://keycloak:8080
       - REALM=projetcis
       - CLIENT_ID=webapp
-      - CLIENT_SECRET=QRGWCkucGM2XMkd06UJ7MQMsJC1Jfjho
+      - CLIENT_SECRET=webapp-client-secret-123
       - REDIRECT_URI=https://localhost:3000/auth/callback
       - PORT=3000
       - SESSION_SECRET=votre-secret-session-super-securise
