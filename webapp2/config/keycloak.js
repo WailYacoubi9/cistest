@@ -1,6 +1,44 @@
 require('dotenv').config();
 const { Issuer } = require('openid-client');
 
+/**
+ * Wait for a specified amount of time
+ * @param {number} ms - milliseconds to wait
+ */
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Retry logic with exponential backoff
+ * @param {Function} fn - async function to retry
+ * @param {number} maxRetries - maximum number of retries
+ * @param {number} initialDelay - initial delay in milliseconds
+ */
+async function retryWithBackoff(fn, maxRetries = 10, initialDelay = 1000) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            return await fn();
+        } catch (error) {
+            lastError = error;
+
+            if (attempt === maxRetries) {
+                throw error;
+            }
+
+            const delay = initialDelay * Math.pow(1.5, attempt - 1);
+            console.log(`Tentative ${attempt}/${maxRetries} échouée. Nouvelle tentative dans ${Math.round(delay)}ms...`);
+            console.log(`Erreur: ${error.message}`);
+
+            await sleep(delay);
+        }
+    }
+
+    throw lastError;
+}
+
 async function initializeKeycloak() {
     try {
         // UTILISER KEYCLOAK_INTERNAL_URL pour la découverte depuis Docker
@@ -18,8 +56,12 @@ async function initializeKeycloak() {
         const issuerUrl = `${keycloakInternalUrl}/realms/${realm}`;
         console.log('Découverte de l\'issuer:', issuerUrl);
 
-        // Discover depuis l'URL interne (keycloak:8080)
-        const issuer = await Issuer.discover(issuerUrl);
+        // Discover depuis l'URL interne (keycloak:8080) avec retry
+        const issuer = await retryWithBackoff(
+            async () => await Issuer.discover(issuerUrl),
+            10,
+            2000
+        );
         console.log('Issuer découvert:', issuer.metadata.issuer);
 
         // Correction des endpoints pour utiliser l'URL interne pour les appels serveur-à-serveur
