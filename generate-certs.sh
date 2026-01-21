@@ -10,11 +10,18 @@ echo "Génération des certificats SSL/TLS"
 echo "========================================="
 echo ""
 
+# Obtenir le répertoire du script et se positionner à la racine du projet
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
+
+echo "Répertoire du projet: $SCRIPT_DIR"
+echo ""
+
 # Fonction pour créer les dossiers
 create_cert_dirs() {
     echo "Création des dossiers pour les certificats..."
-    mkdir -p webapp2/certs
-    mkdir -p device-app/certs
+    mkdir -p "$SCRIPT_DIR/webapp2/certs"
+    mkdir -p "$SCRIPT_DIR/device-app/certs"
     echo "✓ Dossiers créés"
     echo ""
 }
@@ -46,16 +53,16 @@ generate_with_mkcert() {
 
     # Générer les certificats pour webapp2
     echo "Génération des certificats pour webapp2..."
-    cd webapp2/certs
+    cd "$SCRIPT_DIR/webapp2/certs"
     mkcert localhost 127.0.0.1 ::1
-    cd ../..
+    cd "$SCRIPT_DIR"
     echo "✓ Certificats webapp2 générés"
     echo ""
 
     # Copier les certificats pour device-app
     echo "Copie des certificats pour device-app..."
-    cp webapp2/certs/localhost+2.pem device-app/certs/
-    cp webapp2/certs/localhost+2-key.pem device-app/certs/
+    cp "$SCRIPT_DIR/webapp2/certs/localhost+2.pem" "$SCRIPT_DIR/device-app/certs/"
+    cp "$SCRIPT_DIR/webapp2/certs/localhost+2-key.pem" "$SCRIPT_DIR/device-app/certs/"
     echo "✓ Certificats device-app copiés"
     echo ""
 
@@ -80,8 +87,10 @@ generate_with_openssl() {
 
     # Générer les certificats
     echo "Génération des certificats..."
-    openssl req -x509 -newkey rsa:4096 -keyout webapp2/certs/localhost+2-key.pem \
-        -out webapp2/certs/localhost+2.pem -days 365 -nodes \
+    openssl req -x509 -newkey rsa:4096 \
+        -keyout "$SCRIPT_DIR/webapp2/certs/localhost+2-key.pem" \
+        -out "$SCRIPT_DIR/webapp2/certs/localhost+2.pem" \
+        -days 365 -nodes \
         -subj "/CN=localhost" \
         -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
 
@@ -90,8 +99,8 @@ generate_with_openssl() {
 
     # Copier pour device-app
     echo "Copie des certificats pour device-app..."
-    cp webapp2/certs/localhost+2.pem device-app/certs/
-    cp webapp2/certs/localhost+2-key.pem device-app/certs/
+    cp "$SCRIPT_DIR/webapp2/certs/localhost+2.pem" "$SCRIPT_DIR/device-app/certs/"
+    cp "$SCRIPT_DIR/webapp2/certs/localhost+2-key.pem" "$SCRIPT_DIR/device-app/certs/"
     echo "✓ Certificats device-app copiés"
     echo ""
 
@@ -101,10 +110,10 @@ generate_with_openssl() {
 # Vérifier les permissions
 set_permissions() {
     echo "Configuration des permissions..."
-    chmod 600 webapp2/certs/localhost+2-key.pem
-    chmod 644 webapp2/certs/localhost+2.pem
-    chmod 600 device-app/certs/localhost+2-key.pem
-    chmod 644 device-app/certs/localhost+2.pem
+    chmod 600 "$SCRIPT_DIR/webapp2/certs/localhost+2-key.pem"
+    chmod 644 "$SCRIPT_DIR/webapp2/certs/localhost+2.pem"
+    chmod 600 "$SCRIPT_DIR/device-app/certs/localhost+2-key.pem"
+    chmod 644 "$SCRIPT_DIR/device-app/certs/localhost+2.pem"
     echo "✓ Permissions configurées"
     echo ""
 }

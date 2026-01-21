@@ -6,11 +6,21 @@ Write-Host "Génération des certificats SSL/TLS" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Obtenir le répertoire du script et se positionner à la racine du projet
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $ScriptDir
+
+Write-Host "Répertoire du projet: $ScriptDir" -ForegroundColor Cyan
+Write-Host ""
+
 # Fonction pour créer les dossiers
 function Create-CertDirs {
     Write-Host "Création des dossiers pour les certificats..."
-    New-Item -ItemType Directory -Force -Path "webapp2\certs" | Out-Null
-    New-Item -ItemType Directory -Force -Path "device-app\certs" | Out-Null
+    $webappCertsPath = Join-Path $ScriptDir "webapp2\certs"
+    $deviceCertsPath = Join-Path $ScriptDir "device-app\certs"
+
+    New-Item -ItemType Directory -Force -Path $webappCertsPath | Out-Null
+    New-Item -ItemType Directory -Force -Path $deviceCertsPath | Out-Null
     Write-Host "✓ Dossiers créés" -ForegroundColor Green
     Write-Host ""
 }
@@ -43,7 +53,8 @@ function Generate-WithMkcert {
 
     # Générer les certificats pour webapp2
     Write-Host "Génération des certificats pour webapp2..."
-    Push-Location webapp2\certs
+    $webappCertsPath = Join-Path $ScriptDir "webapp2\certs"
+    Push-Location $webappCertsPath
     & mkcert localhost 127.0.0.1 ::1
     Pop-Location
     Write-Host "✓ Certificats webapp2 générés" -ForegroundColor Green
@@ -51,8 +62,12 @@ function Generate-WithMkcert {
 
     # Copier les certificats pour device-app
     Write-Host "Copie des certificats pour device-app..."
-    Copy-Item "webapp2\certs\localhost+2.pem" "device-app\certs\"
-    Copy-Item "webapp2\certs\localhost+2-key.pem" "device-app\certs\"
+    $webappCertFile = Join-Path $ScriptDir "webapp2\certs\localhost+2.pem"
+    $webappKeyFile = Join-Path $ScriptDir "webapp2\certs\localhost+2-key.pem"
+    $deviceCertsPath = Join-Path $ScriptDir "device-app\certs"
+
+    Copy-Item $webappCertFile $deviceCertsPath
+    Copy-Item $webappKeyFile $deviceCertsPath
     Write-Host "✓ Certificats device-app copiés" -ForegroundColor Green
     Write-Host ""
 
@@ -84,19 +99,25 @@ function Generate-WithOpenssl {
     # Générer les certificats
     Write-Host "Génération des certificats..."
 
-    $opensslCmd = @"
-req -x509 -newkey rsa:4096 -keyout webapp2\certs\localhost+2-key.pem -out webapp2\certs\localhost+2.pem -days 365 -nodes -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
-"@
+    $webappKeyFile = Join-Path $ScriptDir "webapp2\certs\localhost+2-key.pem"
+    $webappCertFile = Join-Path $ScriptDir "webapp2\certs\localhost+2.pem"
 
-    & openssl $opensslCmd.Split(' ')
+    & openssl req -x509 -newkey rsa:4096 `
+        -keyout $webappKeyFile `
+        -out $webappCertFile `
+        -days 365 -nodes `
+        -subj "/CN=localhost" `
+        -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
 
     Write-Host "✓ Certificats webapp2 générés" -ForegroundColor Green
     Write-Host ""
 
     # Copier pour device-app
     Write-Host "Copie des certificats pour device-app..."
-    Copy-Item "webapp2\certs\localhost+2.pem" "device-app\certs\"
-    Copy-Item "webapp2\certs\localhost+2-key.pem" "device-app\certs\"
+    $deviceCertsPath = Join-Path $ScriptDir "device-app\certs"
+
+    Copy-Item $webappCertFile $deviceCertsPath
+    Copy-Item $webappKeyFile $deviceCertsPath
     Write-Host "✓ Certificats device-app copiés" -ForegroundColor Green
     Write-Host ""
 
