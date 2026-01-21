@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 4000;
 // Utiliser KEYCLOAK_INTERNAL_URL pour les appels serveur-à-serveur depuis Docker
 const KEYCLOAK_INTERNAL_URL = process.env.KEYCLOAK_INTERNAL_URL || process.env.KEYCLOAK_URL || 'http://localhost:8080';
 const KEYCLOAK_URL = KEYCLOAK_INTERNAL_URL;  // Pour compatibilité avec le reste du code
-const REALM = process.env.KEYCLOAK_REALM || 'projetcis';
+const REALM = process.env.REALM || process.env.KEYCLOAK_REALM || 'projetcis';
 const CLIENT_ID = process.env.CLIENT_ID || 'devicecis';
 
 // Variables pour stocker l'état du device flow
