@@ -44,7 +44,7 @@ router.get('/register', (req, res) => {
     req.session.state = state;
 
     // Construire manuellement l'URL d'inscription Keycloak
-    const keycloakBaseUrl = process.env.KEYCLOAK_ISSUER || 'http://localhost:8080/realms/projetcis';
+    const keycloakBaseUrl = process.env.KEYCLOAK_ISSUER || 'http:/localhost:8080/realms/projetcis';
     const clientId = process.env.CLIENT_ID || 'webapp';
     const redirectUri = process.env.REDIRECT_URI || 'https://localhost:3000/auth/callback';
 

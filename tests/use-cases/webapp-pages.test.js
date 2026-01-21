@@ -356,7 +356,7 @@ describe('Architecture - Keycloak Account API', () => {
     axios.get.mockResolvedValue({ data: [] });
 
     // Vérifier que l'URL appelée contient /account/sessions/devices
-    // et PAS http://localhost:4000
+    // et PAS https://localhost:4000
 
     // expect(axios.get).toHaveBeenCalledWith(
     //   expect.stringContaining('/account/sessions/devices'),

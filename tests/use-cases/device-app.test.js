@@ -24,8 +24,8 @@ describe('UC13: Démarrer Device Flow', () => {
       data: {
         device_code: 'device_code_123',
         user_code: 'ABCD-EFGH',
-        verification_uri: 'http://localhost:8080/realms/projetcis/device',
-        verification_uri_complete: 'http://localhost:8080/realms/projetcis/device?user_code=ABCD-EFGH',
+        verification_uri: 'http:/localhost:8080/realms/projetcis/device',
+        verification_uri_complete: 'http:/localhost:8080/realms/projetcis/device?user_code=ABCD-EFGH',
         expires_in: 600,
         interval: 5
       }
@@ -45,7 +45,7 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit appeler Keycloak device endpoint', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
@@ -61,7 +61,7 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit inclure client_id et scope dans requête', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
@@ -71,7 +71,7 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit retourner user_code et verification_uri', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
@@ -86,7 +86,7 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit générer QR code vers webapp', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
@@ -96,13 +96,13 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit stocker device_code en mémoire', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
     // deviceFlowState doit être stocké
     // Vérifier via /status
-    const statusResponse = await request('http://localhost:4000')
+    const statusResponse = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -111,7 +111,7 @@ describe('UC13: Démarrer Device Flow', () => {
   });
 
   test('Doit démarrer polling automatiquement', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(200);
 
@@ -126,7 +126,7 @@ describe('UC13: Démarrer Device Flow', () => {
       }
     });
 
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/start-device-flow')
       .expect(500);
 
@@ -174,7 +174,7 @@ describe('UC14: Polling Autorisation', () => {
       });
 
     // Start device flow
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/start-device-flow');
 
     // Avancer le temps pour trigger polling
@@ -231,7 +231,7 @@ describe('UC14: Polling Autorisation', () => {
       }
     });
 
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/start-device-flow');
 
     // Avancer le temps au-delà de expires_in
@@ -271,13 +271,13 @@ describe('UC15: Obtention Access Token', () => {
       }
     });
 
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/start-device-flow');
 
     // Simuler polling réussi
     // ...
 
-    const statusResponse = await request('http://localhost:4000')
+    const statusResponse = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -352,7 +352,7 @@ describe('UC17: Logout Device avec Révocation', () => {
     axios.post.mockResolvedValue({ data: {} });
 
     // Simuler device authentifié avec refresh_token
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/logout')
       .expect(200);
 
@@ -370,7 +370,7 @@ describe('UC17: Logout Device avec Révocation', () => {
   test('Doit nettoyer accessToken et refreshToken', async () => {
     axios.post.mockResolvedValue({ data: {} });
 
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/logout')
       .expect(200);
 
@@ -380,7 +380,7 @@ describe('UC17: Logout Device avec Révocation', () => {
     });
 
     // Vérifier via /status que device n'est plus authentifié
-    const statusResponse = await request('http://localhost:4000')
+    const statusResponse = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -390,7 +390,7 @@ describe('UC17: Logout Device avec Révocation', () => {
   test('Doit réussir logout même si révocation échoue', async () => {
     axios.post.mockRejectedValue(new Error('Revoke failed'));
 
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/logout')
       .expect(200);
 
@@ -402,7 +402,7 @@ describe('UC17: Logout Device avec Révocation', () => {
   test('Doit nettoyer deviceFlowState', async () => {
     axios.post.mockResolvedValue({ data: {} });
 
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/logout');
 
     // deviceFlowState doit être null
@@ -413,7 +413,7 @@ describe('UC18: Status Check Interne', () => {
   test('Doit retourner authenticated=true si token présent', async () => {
     // Simuler device authentifié
 
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -438,10 +438,10 @@ describe('UC18: Status Check Interne', () => {
 
     qrcode.toDataURL.mockResolvedValue('data:image/png;base64,test');
 
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/start-device-flow');
 
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -454,7 +454,7 @@ describe('UC18: Status Check Interne', () => {
   });
 
   test('Doit retourner not authenticated si aucun flow', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .get('/status')
       .expect(200);
 
@@ -485,11 +485,11 @@ describe('UC19: Ouvrir Navigateur Auto', () => {
     qrcode.toDataURL.mockResolvedValue('data:image/png;base64,test');
 
     // Start flow
-    await request('http://localhost:4000')
+    await request('https://localhost:4000')
       .post('/start-device-flow');
 
     // Open browser
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/open-browser')
       .expect(200);
 
@@ -498,7 +498,7 @@ describe('UC19: Ouvrir Navigateur Auto', () => {
   });
 
   test('Doit échouer si pas de flow en cours', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .post('/open-browser')
       .expect(400);
 
@@ -511,7 +511,7 @@ describe('UC19: Ouvrir Navigateur Auto', () => {
 
 describe('Health Check', () => {
   test('Doit retourner status OK', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .get('/health')
       .expect(200);
 
@@ -524,7 +524,7 @@ describe('Health Check', () => {
 
 describe('Architecture - Pas de /api/status', () => {
   test('/api/status doit retourner 404', async () => {
-    const response = await request('http://localhost:4000')
+    const response = await request('https://localhost:4000')
       .get('/api/status')
       .expect(404);
   });

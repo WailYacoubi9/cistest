@@ -8,7 +8,7 @@
  * Prérequis:
  * - Keycloak lancé sur http://localhost:8080
  * - WebApp lancée sur https://localhost:3000
- * - Device-app lancée sur http://localhost:4000
+ * - Device-app lancée sur https://localhost:4000
  */
 
 const axios = require('axios');
@@ -17,7 +17,7 @@ const https = require('https');
 // Configuration
 const KEYCLOAK_URL = 'http://localhost:8080';
 const WEBAPP_URL = 'https://localhost:3000';
-const DEVICE_URL = 'http://localhost:4000';
+const DEVICE_URL = 'https://localhost:4000';
 const REALM = 'projetcis';
 
 // Ignorer les certificats self-signed

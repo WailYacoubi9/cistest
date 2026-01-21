@@ -76,8 +76,8 @@ global.testUtils = {
   createMockDeviceFlowState: (overrides = {}) => ({
     device_code: 'mock_device_code_123',
     user_code: 'ABCD-EFGH',
-    verification_uri: 'http://localhost:8080/realms/projetcis/device',
-    verification_uri_complete: 'http://localhost:8080/realms/projetcis/device?user_code=ABCD-EFGH',
+    verification_uri: 'http:/localhost:8080/realms/projetcis/device',
+    verification_uri_complete: 'http:/localhost:8080/realms/projetcis/device?user_code=ABCD-EFGH',
     expires_in: 600,
     interval: 5,
     started_at: Date.now(),

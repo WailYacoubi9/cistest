@@ -9,7 +9,7 @@
 # - curl installé
 # - Keycloak lancé sur http://localhost:8080
 # - WebApp lancée sur https://localhost:3000
-# - Device-app lancée sur http://localhost:4000
+# - Device-app lancée sur https://localhost:4000
 ###############################################################################
 
 # Couleurs
@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 # Configuration
 KEYCLOAK_URL="http://localhost:8080"
 WEBAPP_URL="https://localhost:3000"
-DEVICE_URL="http://localhost:4000"
+DEVICE_URL="https://localhost:4000"
 REALM="projetcis"
 
 # Compteurs

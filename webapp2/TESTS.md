@@ -37,7 +37,7 @@ npm start
 
 Vérifiez que les services répondent :
 - Keycloak: http://localhost:8080
-- Device-app: http://localhost:4000
+- Device-app: https://localhost:4000
 - WebApp: https://localhost:3000
 
 ---
@@ -136,7 +136,7 @@ Cochez chaque étape au fur et à mesure :
 
 ```
 ☐ 1. Démarrer Keycloak, WebApp et Device-app
-☐ 2. Aller sur http://localhost:4000
+☐ 2. Aller sur https://localhost:4000
 ☐ 3. Cliquer "🚀 Démarrer l'authentification"
 ☐ 4. Vérifier que le code s'affiche (ex: WDJB-MJHT)
 ☐ 5. Vérifier que l'URL affichée est https://localhost:3000/activate
@@ -255,7 +255,7 @@ Cochez chaque étape au fur et à mesure :
 ☐ Realm "projetcis" importé
 ☐ Client "webapp" configuré
 ☐ Client "devicecis" configuré
-☐ Device-app lancée (http://localhost:4000)
+☐ Device-app lancée (https://localhost:4000)
 ☐ WebApp lancée (https://localhost:3000)
 ```
 
@@ -302,7 +302,7 @@ Cochez chaque étape au fur et à mesure :
 ```bash
 # Vérifier que les services tournent
 curl http://localhost:8080/health/ready  # Keycloak
-curl http://localhost:4000/health        # Device-app
+curl https://localhost:4000/health        # Device-app
 curl -k https://localhost:3000/          # WebApp
 
 # Vérifier les ports
@@ -343,7 +343,7 @@ grep -n "/api/status" device-app/server.js
 # Chercher: "❌ Erreur lors du démarrage du Device Flow"
 
 # 3. Tester manuellement
-curl -X POST http://localhost:8080/realms/projetcis/protocol/openid-connect/auth/device \
+curl -X POST http:/localhost:8080/realms/projetcis/protocol/openid-connect/auth/device \
   -d "client_id=devicecis" \
   -d "scope=openid profile email"
 ```
@@ -366,7 +366,7 @@ curl -X POST http://localhost:8080/realms/projetcis/protocol/openid-connect/auth
 # Récupérer le token de la session (voir DevTools → Application → Cookies)
 # Puis:
 curl -H "Authorization: Bearer <TOKEN>" \
-  http://localhost:8080/realms/projetcis/account/sessions/devices
+  http:/localhost:8080/realms/projetcis/account/sessions/devices
 ```
 
 ---

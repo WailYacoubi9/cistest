@@ -16,6 +16,7 @@
             "description": "Client pour l'application web avec Standard Flow",
             "enabled": true,
             "clientAuthenticatorType": "client-secret",
+            "secret": "webapp-client-secret-123",
             "redirectUris": [
                 "https://localhost:3000/auth/callback",
                 "https://localhost:3000/*"

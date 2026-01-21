@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     newNoDevicesBox.innerHTML = `
                         <div class="info-content">
                             <h4>Aucun appareil connecté</h4>
-                            <p>Démarrez device-app sur <a href="http://localhost:4000" target="_blank" style="color: #3b82f6; font-weight: 600;">http://localhost:4000</a> et authentifiez-vous pour voir vos appareils ici.</p>
+                            <p>Démarrez device-app sur <a href="https://localhost:4000" target="_blank" style="color: #3b82f6; font-weight: 600;">https://localhost:4000</a> et authentifiez-vous pour voir vos appareils ici.</p>
                             <p style="margin-top: 10px; color: #6b7280; font-size: 0.95rem;">
                                 Les appareils authentifiés via le Device Flow OAuth2 apparaîtront automatiquement dans cette liste.
                             </p>
