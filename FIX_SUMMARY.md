@@ -46,33 +46,19 @@ Added intelligent retry logic:
 - No manual intervention needed
 - Clear logging of retry attempts
 
-### 2. Keycloak Health Check
+### 2. Simplified Dependencies
 **File**: `docker-compose.yml`
 
-Added comprehensive health check to Keycloak service:
+The retry mechanism handles timing, so we keep dependencies simple:
 ```yaml
-healthcheck:
-  test: HTTP request to /health/ready endpoint
-  interval: 10s
-  timeout: 5s
-  retries: 10
-  start_period: 60s
+depends_on:
+  - keycloak  # Simple dependency, retry logic handles readiness
 ```
 
 **Benefits**:
-- Docker knows when Keycloak is truly ready
-- Dependent services wait for actual readiness
-- Prevents premature connection attempts
-
-### 3. Improved Service Dependencies
-**File**: `docker-compose.yml`
-
-Updated webapp and device-app dependencies:
-```yaml
-depends_on:
-  keycloak:
-    condition: service_healthy  # Changed from just "depends_on: keycloak"
-```
+- Simpler configuration, fewer potential issues
+- Retry mechanism in code is more reliable than health checks
+- Works across different Keycloak versions and environments
 
 Reduced restart limits:
 - webapp: `on-failure:5` (was 30)

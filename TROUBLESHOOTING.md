@@ -17,9 +17,9 @@ The code now includes:
 3. **Proper dependency management** - webapp now waits for Keycloak health check to pass
 
 ### What Changed
-- Added retry logic to `initializeKeycloak()` function
-- Added Keycloak health check in docker-compose.yml
-- Changed webapp dependency from basic `depends_on` to `condition: service_healthy`
+- Added retry logic to `initializeKeycloak()` function with exponential backoff
+- Webapp automatically retries connection up to 10 times with increasing delays
+- Simplified docker-compose.yml dependencies (retry logic handles timing instead of health checks)
 
 ---
 
@@ -87,9 +87,11 @@ The solution is to reset the Keycloak data volume as described above.
 With the fixes, the correct startup sequence is:
 
 1. **PostgreSQL starts** → Health check passes
-2. **Keycloak starts** → Waits for PostgreSQL → Imports realm → Health check passes (may take 30-60 seconds)
-3. **Webapp starts** → Waits for Keycloak health check → Retries connection if needed → Connects successfully
+2. **Keycloak starts** → Waits for PostgreSQL → Imports realm (may take 30-60 seconds)
+3. **Webapp starts** → Begins after Keycloak container starts → Retries connection automatically → Connects successfully once Keycloak is ready
 4. **Device-app starts** → Same as webapp
+
+The retry mechanism in the code handles the timing automatically, so you'll see retry messages in the logs while Keycloak initializes.
 
 ---
 
