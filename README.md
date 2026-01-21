@@ -1,6 +1,8 @@
 # Projet CIS – Démonstrateur OAuth2 / OpenID Connect avec Keycloak
 
-Ce projet met en place une architecture complète pour illustrer l’authentification par délégation avec Keycloak :
+> **🚀 NOUVEAU UTILISATEUR?** Consultez **[SETUP.md](SETUP.md)** pour un guide de démarrage rapide en 4 étapes!
+
+Ce projet met en place une architecture complète pour illustrer l'authentification par délégation avec Keycloak :
 
 - Une application Node.js / Express (`webapp2`) protégée par OpenID Connect (flow "code" + PKCE).
 - Un serveur Keycloak (mode `start-dev`) avec import automatique d’un realm préconfiguré (`projetcis`).
@@ -62,22 +64,57 @@ Cette ligne permet au navigateur d’accéder à Keycloak via `http://keycloak:8
 
 ## Certificats TLS et script de génération
 
-La webapp tourne en HTTPS avec un certificat auto-signé. Les fichiers attendus :
+⚠️ **IMPORTANT:** Les certificats SSL sont **OBLIGATOIRES**. L'application ne démarrera pas sans eux!
+
+### Génération automatique (Recommandé)
+
+Utilisez les scripts fournis pour générer automatiquement les certificats:
+
+**Windows PowerShell:**
+```powershell
+.\generate-certs.ps1
+```
+
+**Linux/Mac/Git Bash:**
+```bash
+./generate-certs.sh
+```
+
+Ces scripts:
+- Génèrent les certificats avec `mkcert` (ou `openssl` en fallback)
+- Créent les fichiers dans `webapp2/certs/` et `device-app/certs/`
+- Configurent les permissions correctes
+- Installent l'autorité de certification locale (avec mkcert)
+
+### Génération manuelle
+
+Si vous préférez générer manuellement, les fichiers attendus sont :
 
 ```text
 webapp2/certs/
   ├─ localhost+2.pem
   └─ localhost+2-key.pem
+
+device-app/certs/
+  ├─ localhost+2.pem
+  └─ localhost+2-key.pem
 ```
 
-Exemple de génération avec `mkcert` :
-
+Avec `mkcert` :
 ```bash
+# Installer mkcert et l'autorité de certification
 mkcert -install
-mkcert -key-file localhost+2-key.pem -cert-file localhost+2.pem "localhost" 127.0.0.1 ::1
+
+# Générer pour webapp2
+cd webapp2/certs
+mkcert localhost 127.0.0.1 ::1
+
+# Copier pour device-app
+cp localhost+2.pem ../../device-app/certs/
+cp localhost+2-key.pem ../../device-app/certs/
 ```
 
-Copiez ensuite ces fichiers dans `webapp2/certs/`. Ces fichiers ne doivent pas être versionnés (ignorés par `.gitignore`).
+Ces fichiers ne sont pas versionnés (ignorés par `.gitignore`) et doivent être générés localement.
 
 ## Variables d’environnement de la webapp
 
