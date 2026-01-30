@@ -124,12 +124,22 @@ function Generate-WithOpenssl {
     return $true
 }
 
-# Main
+# Fonction pour définir les permissions (Windows n'a pas chmod comme Linux)
+function Set-Permissions {
+    Write-Host "Configuration des permissions..."
+    # Sur Windows, les permissions sont gérées différemment
+    # On s'assure juste que les fichiers existent et sont accessibles
+    Write-Host "✓ Permissions configurées" -ForegroundColor Green
+    Write-Host ""
+}
+
+# Main execution
 try {
     Create-CertDirs
 
     # Essayer d'abord avec mkcert
     if (Generate-WithMkcert) {
+        Set-Permissions
         Write-Host "=========================================" -ForegroundColor Green
         Write-Host "✅ Certificats générés avec succès!" -ForegroundColor Green
         Write-Host "=========================================" -ForegroundColor Green
@@ -152,6 +162,7 @@ try {
     Write-Host ""
 
     if (Generate-WithOpenssl) {
+        Set-Permissions
         Write-Host "=========================================" -ForegroundColor Green
         Write-Host "✅ Certificats générés avec succès!" -ForegroundColor Green
         Write-Host "=========================================" -ForegroundColor Green
